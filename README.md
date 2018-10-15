@@ -1,2 +1,2 @@
-# aj-jq
-Ajax和jquer笔记
+＃aj-jq
+AJAX和JQuer的笔记
