@@ -506,3 +506,115 @@ $(function(){
   				<cname>东莞</cname>
   			</city>
   		</list>
+		* json
+
+  阅读性更好 、 容量更小。
+
+  {"name":"aaa" , "age":19}
+
+
+		把javaBean  转化成 json数据
+
+		//3. 把list ---> json数据
+			//JSONArray ---> 变成数组 ， 集合  []
+			//JSONObject ---> 变成简单的数据  { name : zhangsan , age:18}
+			
+			JSONArray jsonArray = JSONArray.fromObject(list);
+			String json = jsonArray.toString();
+
+
+##使用json格式数据显示省市联动效果
+	serlvet代码：
+
+		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		try {
+			//1. 获取参数
+			int pid = Integer.parseInt(request.getParameter("pid"));
+			
+			//2 找出所有的城市
+			CityDao dao = new CityDaoImpl();
+			List<CityBean> list = dao.findCity(pid);
+			
+			//3. 把list ---> json数据
+			//JSONArray ---> 变成数组 ， 集合  []
+			//JSONObject ---> 变成简单的数据  { name : zhangsan , age:18}
+			
+			JSONArray jsonArray = JSONArray.fromObject(list);
+			String json = jsonArray.toString();
+
+
+			response.setContentType("text/html;charset=utf-8");
+			response.getWriter().write(json);
+
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
+	}
+
+
+
+	js代码
+
+
+		$(function() {
+			//1。找到省份的元素
+			$("#province").change(function() {
+				//2. 一旦里面的值发生了改变，那么就去请求该省份的城市数据
+				//$("#province").varl();
+				var pid = $(this).val();
+				
+				/*[
+				    {
+				        "cname": "深圳",
+				        "id": 1,
+				        "pid": 1
+				    },
+				    {
+				        "cname": "东莞",
+				        "id": 2,
+				        "pid": 1
+				    }
+				    ...
+				]*/
+				$.post( "CityServlet02",{pid:pid} ,function(data,status){
+					
+					//先清空
+					$("#city").html("<option value='' >-请选择-");
+					//再遍历，追加
+					$(data).each(function(index , c) {
+						$("#city").append("<option value='"+c.id+"' >"+c.cname)
+					});
+				},"json" );
+				
+			});
+		});
+
+
+##总结
+
+###Ajax  
+
+	发送get请求
+
+	发送post请求
+
+	都要求带数据 + 获取数据＋　放置到元素上。
+
+###JQuery
+
+
+	发送get请求
+
+	发送post请求
+
+	都要求带数据 + 获取数据＋　放置到元素上。
+
+	---------------------------------------
+
+	1. 服务器返回xml数据
+
+
+	2. 服务器返回json数据
